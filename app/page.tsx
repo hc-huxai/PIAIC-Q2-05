@@ -24,10 +24,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Eye, FileEditIcon, MoreHorizontal, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { FormTableRow } from "@/components/table-row";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
-  const data = useContactForm();
+  const store = useContactForm();
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -39,12 +42,6 @@ export default function Home() {
 
   return (
     <>
-      {/* <Button onClick={() => data.removeAll()}>Clear All</Button>
-  {
-    data.items.map((item, index) => (
-      <p key={index}>{JSON.stringify(item)}</p>
-    ))
-  } */}
       <div className="space-y-4 p-8">
         {/* Content Header */}
         <div className="flex items-center justify-between">
@@ -67,40 +64,9 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.items.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{item.email}</TableCell>
-                  <TableCell>{item.subject}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          className="mr-0 ml-auto"
-                          size={"icon"}
-                          variant={"ghost"}
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel className="text-gray-600 text-xs">
-                          Actions
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex gap-2 items-center">
-                          <Eye className="w-4 h-4" /> View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="flex gap-2 items-center">
-                          <FileEditIcon className="w-4 h-4" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="flex gap-2 items-center">
-                          <Trash className="w-4 h-4" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {store.items.map((item, index) => {
+                return <FormTableRow key={index} item={item} />;
+              })}
             </TableBody>
           </Table>
         </div>

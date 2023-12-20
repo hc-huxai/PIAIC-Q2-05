@@ -18,16 +18,17 @@ import { TextAreaCard } from "@/components/textarea-card";
 import { SelectCard } from "@/components/select-card";
 import useContactForm from "@/hooks/use-contact";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AlertModal } from "@/components/modals/delete-modal";
 
 export default function ContactForm({
   params,
 }: {
   params: { formId: string };
 }) {
-  // let initialData: ContactData;
   const store = useContactForm();
   const [isMounted, setIsMounted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const [data, setData] = useState<ContactData>(
     params.formId == "new"
       ? {
@@ -45,31 +46,12 @@ export default function ContactForm({
       : store.getItem(params.formId)
   );
 
-  // if (params.formId != "new") {
-  //   initialData = store.getItem(params.formId);
-  // } else {
-  //   initialData = {
-  //     id: undefined,
-  //     firstName: undefined,
-  //     middleName: undefined,
-  //     lastName: undefined,
-  //     reason: undefined,
-  //     email: undefined,
-  //     phone: undefined,
-  //     subject: undefined,
-  //     message: undefined,
-  //     termsAccepted: false,
-  //   };
-  // }
-
   const router = useRouter();
 
   const [errors, setErrors] = useState<any>({});
-  const [contactList, setContactList] = useState<ContactData[]>([]);
 
   const formSchema = yup.object().shape(
     {
-      id: yup.string().required(),
       firstName: yup
         .string()
         .trim()
@@ -134,7 +116,8 @@ export default function ContactForm({
         .string()
         .trim()
         .required("!subject: Subject is required!")
-        .min(6, "!subject: Subject must consist of more than 6 characters").max(36, "!subject: Subject must be less than 36 characters"),
+        .min(6, "!subject: Subject must consist of more than 6 characters")
+        .max(36, "!subject: Subject must be less than 36 characters"),
       message: yup
         .string()
         .trim()
@@ -166,18 +149,11 @@ export default function ContactForm({
   const onClickHandler = async () => {
     setErrors({});
 
-    const randomUUID = generateUUID();
-    setData({ ...data, id: randomUUID });
-
     try {
-      // console.log(result);
-
-      // if (!result) {
-      //   return;
-      // }
-
       if (params.formId == "new") {
         const result = await formSchema.validate(data, { abortEarly: false });
+        // const randomUUID = generateUUID();
+        // setData({ ...data, id: randomUUID });
         store.addItem(data);
       } else {
         const result = await formSchema.validate(data, { abortEarly: false });
@@ -206,127 +182,148 @@ export default function ContactForm({
     }
   };
 
+  const onDelete = () => {
+    try {
+      setLoading(true);
+      store.removeItem(data.id!);
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOpen(false);
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="space-y-4 p-8">
-      {/* Content Header */}
-      <div className="flex items-center justify-between">
-        <Heading title="Contact Us" description="Tell us what you think" />
-        {data.id && (
-          <Button
-            variant={"destructive"}
-            disabled={loading}
-            size={"icon"}
-            onClick={() => {}}
-          >
-            <Trash className="w-4 h-4" />
-          </Button>
-        )}
-      </div>
-      <Separator />
+    <>
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
+      />
+      <div className="space-y-4 p-8">
+        {/* Content Header */}
+        <div className="flex items-center justify-between">
+          <Heading title="Contact Us" description="Tell us what you think" />
+          {data.id && (
+            <Button
+              variant={"destructive"}
+              disabled={loading}
+              size={"icon"}
+              onClick={() => setOpen(true)}
+            >
+              <Trash className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+        <Separator />
 
-      <div className="space-y-8 w-full">
-        <div className="flex flex-col gap-8 w-[36rem] max-w-full mx-auto py-4">
-          <div className="grid grid-cols-2 gap-8 max-[480px]:grid-cols-1">
-            <InputCard
-              name="firstName"
-              label="First Name"
-              required
-              error={errors["!firstName"]}
-              onChangeHandler={onChangeHandler}
-              value={data["firstName"]}
-            />
+        <div className="space-y-8 w-full">
+          <div className="flex flex-col gap-8 w-[36rem] max-w-full mx-auto py-4">
+            <div className="grid grid-cols-2 gap-8 max-[480px]:grid-cols-1">
+              <InputCard
+                name="firstName"
+                label="First Name"
+                required
+                error={errors["!firstName"]}
+                onChangeHandler={onChangeHandler}
+                value={data["firstName"]}
+              />
 
-            <InputCard
-              name="middleName"
-              label="Middle Name"
-              error={errors["!middleName"]}
-              onChangeHandler={onChangeHandler}
-              value={data["middleName"]}
-            />
+              <InputCard
+                name="middleName"
+                label="Middle Name"
+                error={errors["!middleName"]}
+                onChangeHandler={onChangeHandler}
+                value={data["middleName"]}
+              />
 
-            <InputCard
-              name="lastName"
-              label="Last Name"
-              required
-              error={errors["!lastName"]}
-              onChangeHandler={onChangeHandler}
-              value={data["lastName"]}
-            />
+              <InputCard
+                name="lastName"
+                label="Last Name"
+                required
+                error={errors["!lastName"]}
+                onChangeHandler={onChangeHandler}
+                value={data["lastName"]}
+              />
 
-            <SelectCard
-              error={errors["!reason"]}
-              onValueChange={(value) => setData({ ...data, reason: value })}
-              value={data["reason"]}
-            />
-          </div>
-
-          <div className="border border-dashed grid grid-cols-2 max-md:grid-cols-2 max-[480px]:grid-cols-1 gap-8 p-4 max-[900px]:col-span-2 rounded-md relative">
-            <h3 className="text-xs font-semibold bg-white rounded-full absolute top-[-9px] left-4 px-2">
-              Fill one of these
-            </h3>
-
-            <InputCard
-              name="email"
-              label="Email Address"
-              required={data.phone == undefined}
-              error={errors["!email"]}
-              onChangeHandler={onChangeHandler}
-              value={data["email"]}
-            />
-
-            <InputCard
-              name="phone"
-              label="Phone Number"
-              required={data.email == undefined}
-              error={errors["!phone"]}
-              onChangeHandler={onChangeHandler}
-              value={data["phone"]}
-            />
-          </div>
-
-          <InputCard
-            name="subject"
-            label="Subject"
-            required
-            error={errors["!subject"]}
-            onChangeHandler={onChangeHandler}
-            value={data["subject"]}
-          />
-
-          <TextAreaCard
-            name="message"
-            label="Message"
-            required
-            error={errors["!message"]}
-            onChangeHandler={onChangeHandler}
-            value={data["message"]}
-          />
-
-          <div className="items-start flex space-x-2">
-            <Checkbox
-              id=""
-              onCheckedChange={(e) => setData({ ...data, termsAccepted: e })}
-              checked={data["termsAccepted"] == true ? true : false}
-            />
-            <div className="grid gap-1.5 leading-none">
-              <label
-                htmlFor=""
-                className={cn(
-                  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-                  !!errors["!termsAccepted"] && "text-destructive"
-                )}
-              >
-                Accept terms and conditions
-              </label>
-              <p className="text-sm text-muted-foreground">
-                You agree to our Terms of Service and Privacy Policy.
-              </p>
+              <SelectCard
+                error={errors["!reason"]}
+                onValueChange={(value) => setData({ ...data, reason: value })}
+                value={data["reason"]}
+              />
             </div>
-          </div>
 
-          <Button onClick={onClickHandler}>Submit</Button>
+            <div className="border border-dashed grid grid-cols-2 max-md:grid-cols-2 max-[480px]:grid-cols-1 gap-8 p-4 max-[900px]:col-span-2 rounded-md relative">
+              <h3 className="text-xs font-semibold bg-white rounded-full absolute top-[-9px] left-4 px-2">
+                Fill one of these
+              </h3>
+
+              <InputCard
+                name="email"
+                label="Email Address"
+                required={data.phone == undefined}
+                error={errors["!email"]}
+                onChangeHandler={onChangeHandler}
+                value={data["email"]}
+              />
+
+              <InputCard
+                name="phone"
+                label="Phone Number"
+                required={data.email == undefined}
+                error={errors["!phone"]}
+                onChangeHandler={onChangeHandler}
+                value={data["phone"]}
+              />
+            </div>
+
+            <InputCard
+              name="subject"
+              label="Subject"
+              required
+              error={errors["!subject"]}
+              onChangeHandler={onChangeHandler}
+              value={data["subject"]}
+            />
+
+            <TextAreaCard
+              name="message"
+              label="Message"
+              required
+              error={errors["!message"]}
+              onChangeHandler={onChangeHandler}
+              value={data["message"]}
+            />
+
+            <div className="items-start flex space-x-2">
+              <Checkbox
+                id=""
+                onCheckedChange={(e) => setData({ ...data, termsAccepted: e })}
+                checked={data["termsAccepted"] == true ? true : false}
+              />
+              <div className="grid gap-1.5 leading-none">
+                <label
+                  htmlFor=""
+                  className={cn(
+                    "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+                    !!errors["!termsAccepted"] && "text-destructive"
+                  )}
+                >
+                  Accept terms and conditions
+                </label>
+                <p className="text-sm text-muted-foreground">
+                  You agree to our Terms of Service and Privacy Policy.
+                </p>
+              </div>
+            </div>
+
+            <Button onClick={onClickHandler}>Submit</Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

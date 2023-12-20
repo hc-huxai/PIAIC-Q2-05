@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { ContactData } from "@/types/contactData";
+import { v4 as generateUUID } from "uuid";
 
 interface FormStore {
   items: ContactData[];
@@ -17,13 +18,15 @@ const useContactForm = create(
       items: [],
       addItem: (data: ContactData) => {
         const currentItems = get().items;
-        const existingItem = currentItems.find((item) => item.id === data.id);
+        // const existingItem = currentItems.find((item) => item.id === data.id);
 
-        if (existingItem) {
-          return alert("Item already in cart");
-        }
+        // if (existingItem) {
+        //   return alert("Item already in cart");
+        // }
 
-        set({ items: [...get().items, data] });
+
+        const uuid = generateUUID();
+        set({ items: [...get().items, {...data, id: uuid }] });
         alert("Form Submitted");
       },
 

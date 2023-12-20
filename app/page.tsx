@@ -36,50 +36,6 @@ export default function Home() {
   if (!isMounted) {
     return null;
   }
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ];
 
   return (
     <>
@@ -127,11 +83,19 @@ export default function Home() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuLabel className='text-gray-600 text-xs'>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel className="text-gray-600 text-xs">
+                          Actions
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex gap-2 items-center"><Eye className="w-4 h-4"/> View</DropdownMenuItem>
-                        <DropdownMenuItem className="flex gap-2 items-center"><FileEditIcon className="w-4 h-4"/> Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="flex gap-2 items-center"><Trash className="w-4 h-4"/> Delete</DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-2 items-center">
+                          <Eye className="w-4 h-4" /> View
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-2 items-center">
+                          <FileEditIcon className="w-4 h-4" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-2 items-center">
+                          <Trash className="w-4 h-4" /> Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

@@ -9,14 +9,13 @@ import { usePathname } from "next/navigation";
 export const Header = () => {
   const pathname = usePathname();
 
-  console.log(pathname)
-
   return (
     <header className="w-screen h-16 p-4 px-8 flex items-center justify-between select-none border-b">
       <Link href="/">
         <Image
           src={logo}
           alt="logo"
+          priority
           className="h-8 w-auto select-none cursor-pointer"
         />
       </Link>

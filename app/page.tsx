@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { Eye, FileEditIcon, MoreHorizontal, Trash } from "lucide-react";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
@@ -101,7 +101,7 @@ export default function Home() {
 
         <div className="space-y-8 w-full">
           <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableCaption>A list of Contact Form Submissions.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Email</TableHead>
@@ -127,12 +127,11 @@ export default function Home() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuLabel className='text-gray-600 text-xs'>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Billing</DropdownMenuItem>
-                        <DropdownMenuItem>Team</DropdownMenuItem>
-                        <DropdownMenuItem>Subscription</DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-2 items-center"><Eye className="w-4 h-4"/> View</DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-2 items-center"><FileEditIcon className="w-4 h-4"/> Edit</DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-2 items-center"><Trash className="w-4 h-4"/> Delete</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

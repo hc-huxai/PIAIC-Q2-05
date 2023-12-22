@@ -1,9 +1,8 @@
 "use client";
 // * Global/Package Imports
-import { Info, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
-import { v4 as generateUUID } from "uuid";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { ContactData, EventHandler } from "@/types/contactData";
-// import { generateUUID } from "@/actions/generateId";
 import { InputCard } from "@/components/input-card";
 import { TextAreaCard } from "@/components/textarea-card";
 import { SelectCard } from "@/components/select-card";

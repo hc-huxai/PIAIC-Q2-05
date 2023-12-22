@@ -28,7 +28,7 @@ export const InputCard = ({
   onChangeHandler,
   error,
   required,
-  inputStyles
+  inputStyles,
 }: InputCardProps) => {
   const [open, setOpen] = useState(false);
 
@@ -45,6 +45,8 @@ export const InputCard = ({
                   <AlertCircle
                     className="h-4 w-4 ml-1 stroke-destructive cursor-pointer"
                     onClick={() => setOpen(true)}
+                    onMouseOver={() => setOpen(true)}
+                    onMouseLeave={() => setOpen(false)}
                   />
                 </TooltipTrigger>
                 <TooltipContent className="relative z-4 pt-8 pb-2">
